@@ -13,6 +13,17 @@ import android.widget.Toast;
 
 public class Services extends Activity {
 
+    /*
+    I created this final array here so I can access the list of services from the BrowseSitters class.
+    I also created a getServiceList method at the bottom of this class.
+    I had to add "Select a Service" as the first entry in the array, because I couldn't figure out how to set
+    the Spinner prompt that I'm using. If having this entry here causes problems for the Services activity
+    let me know and I will try and figure something else out.
+    -Mae
+     */
+
+    private final String[] serviceList = {"Select a Service","Day Care", "Pet Sitting","Grooming"};
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.services);
@@ -63,5 +74,10 @@ public class Services extends Activity {
         return false;
 
     }
+
+    public String[] getServiceList(){
+        return serviceList;
+    }
+
 }
 
