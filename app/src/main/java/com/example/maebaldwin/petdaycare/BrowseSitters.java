@@ -2,8 +2,11 @@ package com.example.maebaldwin.petdaycare;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.Toast;
+import android.widget.Spinner;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -32,22 +36,30 @@ import java.util.ArrayList;
     // New comments to commit 2
 
 
-
-
 public class BrowseSitters extends FragmentActivity implements OnMapReadyCallback, AdapterView.OnItemClickListener {
     private TabHost tabs;
     private GoogleMap map;
     private float zoom = 11.5f;
-    private ListView sitters;
-    private ArrayList<String> listArray = new ArrayList<String>();
-    private ArrayAdapter<String> adapter;
+
+
+    private ListView sitterlv;
+    private ArrayList<BrowseSitters.Sitter> sitterArray = new ArrayList<Sitter>();
+    private ArrayAdapter<BrowseSitters.Sitter> sitterAdapter;
+
+    private String[] serviceArray;
+    private Services services = new Services(); // Created Services object to access static list of services
+    private Spinner servicesp;
+
+    private SitterSQLHelper helper;
+    private SQLiteDatabase db;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_sitters);
 
 
-        tabs = (TabHost)findViewById(R.id.tabhost);
+        tabs = (TabHost) findViewById(R.id.tabhost);
         tabs.setup();
         TabHost.TabSpec spec;
 
@@ -57,10 +69,25 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
         spec.setIndicator("Map");
         tabs.addTab(spec);
 
+
+        //-------Spinner---------------------------------
+        serviceArray = services.getServiceList(); // Get the current list of services from Service class
+        servicesp = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<String> spinAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_spinner_item,
+                serviceArray);
+
+        spinAdapter.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item);
+        servicesp.setAdapter(spinAdapter);  //connect ArrayAdapter to <Spinner>
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapfrag);
         mapFragment.getMapAsync(this);
 
+
+        //--------tabs-----------------------------------
         // Initialize a TabSpec for the list tab
         spec = tabs.newTabSpec("t1");
         spec.setContent(R.id.List);
@@ -68,11 +95,26 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
         tabs.addTab(spec);
 
         // For Sitter list tab
-        sitters = (ListView)findViewById(R.id.listView);
-        sitters.setOnItemClickListener(this);
-        adapter = new ArrayAdapter<String>(this, R.layout.list, listArray);
-        sitters.setAdapter(adapter);
+        sitterlv = (ListView) findViewById(R.id.listView);
+        sitterlv.setOnItemClickListener(this);
+        sitterAdapter = new ArrayAdapter<BrowseSitters.Sitter>(this, R.layout.list, sitterArray);
+        sitterlv.setAdapter(sitterAdapter);
 
+
+        //------------------Database--------------
+
+        helper = new SitterSQLHelper(this);
+        try {
+            db = helper.getWritableDatabase();
+        } catch (SQLException e) {
+            Log.d("JoyPet", "Create database failed");
+        }
+
+        helper.addSitter(new BrowseSitters(). new Sitter("Mae","Natick"));
+
+        for(int i = 0; i <helper.getSitterList().size(); i++){
+            sitterAdapter.add(helper.getSitterList().get(i));
+        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,6 +148,11 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
 
     }
 
+
+    // When a spinner item is clicked
+    public void onItemSelected(AdapterView<?> parent, View v, int position, long id){
+
+    }
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemID = item.getItemId();
 
@@ -135,6 +182,23 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
         return false;
 
     }
+
+    public class Sitter {
+        private String name;
+        private String loc;
+
+        public Sitter (String name, String loc){
+            this.name = name;
+            this.loc = loc;
+        }
+
+        public String getName(){return this.name;}
+        public String getLoc(){return this.loc;}
+
+        public String toString(){return "Name:" + this.name + " Location: " + this.loc;}
+
+    }
+
 }
 
 
