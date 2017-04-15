@@ -22,7 +22,7 @@ public class Services extends Activity {
     -Mae
      */
 
-    private final String[] serviceList = {"Select a Service","Day Care", "Pet Sitting","Grooming"};
+    private final String[] serviceList = {"All Services","Day Care", "Pet Sitting","Grooming","Dog Walking"};
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +78,7 @@ public class Services extends Activity {
     public String[] getServiceList(){
         return serviceList;
     }
+
 
 }
 
