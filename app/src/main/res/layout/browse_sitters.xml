@@ -15,9 +15,34 @@
             android:layout_width="match_parent" android:layout_height="match_parent">
 
             <!-- first tab -->
+
+            <LinearLayout android:id="@+id/List"
+                android:orientation="vertical" android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Spinner android:id="@+id/spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent">
+                </Spinner>
+
+                <ListView
+                    android:id="@+id/listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            </LinearLayout>
+
+            <!-- second tab -->
+
             <LinearLayout android:id="@+id/Map"
                 android:orientation="vertical" android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/MapShowing"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
 
                 <fragment
                     android:layout_width="match_parent"
@@ -25,18 +50,6 @@
                     android:id="@+id/mapfrag"
                     tools:context="com.example.maebaldwin.myapplication.Main"
                     android:name="com.google.android.gms.maps.SupportMapFragment"/>
-
-            </LinearLayout>
-
-            <!-- second tab -->
-            <LinearLayout android:id="@+id/List"
-                android:orientation="vertical" android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ListView
-                    android:id="@+id/listView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
 
             </LinearLayout>
 
