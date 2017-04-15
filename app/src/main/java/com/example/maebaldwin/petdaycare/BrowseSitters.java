@@ -41,6 +41,18 @@ import java.util.ArrayList;
     // New comments to commit 2
 
 
+
+/*
+TODO: Custom adaptor for list view
+TODO: Layout for SitterProfile
+TODO: Book button for Sitter Profile sends SMS/Email
+TODO: Logged in user data
+TODO: Add photo to sitters
+
+
+ */
+
+
 public class BrowseSitters extends FragmentActivity implements OnMapReadyCallback, AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener {
     private TabHost tabs;
     private GoogleMap map;
@@ -151,9 +163,6 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
         );
 
     }
-
-
-
 
 
     /*
