@@ -1,4 +1,6 @@
-//This app has 21 errors because the gradle build isn't working properly!!!
+
+//Changed this comment 4/19 6:35PM
+
 
 package com.example.maebaldwin.petdaycare;
 
