@@ -1,3 +1,5 @@
+//This app has 21 errors because the gradle build isn't working properly!!!
+
 package com.example.maebaldwin.petdaycare;
 
 import android.content.Intent;
