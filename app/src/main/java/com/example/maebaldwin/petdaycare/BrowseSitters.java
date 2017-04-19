@@ -17,6 +17,7 @@ import android.widget.TabHost;
 import android.widget.Toast;
 import android.widget.Spinner;
 import android.widget.TextView;
+import java.io.Serializable;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -60,7 +61,7 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
 
     private ListView sitterlv;
     private ArrayList<BrowseSitters.Sitter> sitterArray = new ArrayList<Sitter>();
-    private ArrayAdapter<BrowseSitters.Sitter> sitterAdapter;
+    private CustomListAdapter sitterAdapter;
 
     private String[] serviceArray;
     private Services services = new Services(); // Created Services object to access static list of services
@@ -106,7 +107,7 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
         sitterlv = (ListView) findViewById(R.id.listView);
         sitterlv.setOnItemClickListener(this);
 
-        sitterAdapter = new ArrayAdapter<BrowseSitters.Sitter>(this, R.layout.list, sitterArray);
+        sitterAdapter = new CustomListAdapter(this, sitterArray);
         sitterlv.setAdapter(sitterAdapter);
 
         // For the maps tab
@@ -177,7 +178,16 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
 
     // When a list item is clicked
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-        setContentView(R.layout.sitter_profile);
+
+        Intent intent = new Intent(this, SitterProfile.class);
+        Sitter sitter = sitterAdapter.getItem(position);
+        ArrayList<Service> sitterServices = helper.getSitterServices(sitter);
+        Bundle b = new Bundle();
+        b.putSerializable("Sitter", (Serializable) sitter);
+        b.putSerializable("Services",(Serializable) sitterServices);
+        intent.putExtras(b);
+        startActivity(intent);
+
 
 
     }
