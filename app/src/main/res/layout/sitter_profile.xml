@@ -1,6 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+
+<LinearLayout
+
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/SitterImage"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        />
+
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:id="@+id/SitterMapFrag"
+        tools:context="com.example.maebaldwin.myapplication.Main"
+        android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
+    <TextView
+        android:id="@+id/SitterInfo"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:fontFamily="casual"
+        android:layout_gravity="center_horizontal" />
+
+
+    <Button
+        android:id="@+id/Contact"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+    <TextView
+        android:id="@+id/SelectedSrv"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        />
+
+    <GridView
+        android:id="@+id/ServiceGrid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="100dip"
+        android:gravity="center"
+        android:horizontalSpacing="5dip"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="35dip" />
+
 </LinearLayout>
+
+
+</ScrollView>
