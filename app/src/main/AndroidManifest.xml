@@ -6,12 +6,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-
-    android:allowBackup="true"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true">
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDAU2ux1_q-08J2PdKvZnhIksFOuRx80ow" />
@@ -23,14 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".BrowseSitters"></activity>
-        <activity android:name=".PetProfile"></activity>
-        <activity android:name=".Services"></activity>
-
-
+        <activity android:name=".MainActivity" />
+        <activity android:name=".BrowseSitters" />
+        <activity android:name=".PetProfile" />
+        <activity android:name=".Services" />
+        <activity android:name=".SitterProfile"></activity>
     </application>
 
 </manifest>
