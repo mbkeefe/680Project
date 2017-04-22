@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 public class SitterSQLHelper extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "petdaycare1.db";
+    public static final String DATABASE_NAME = "petdaycare5.db";
     public static final int DATABASE_VERSION = 4;
 
     public static final String T_SITTERS = "sitters";
@@ -105,15 +105,18 @@ public class SitterSQLHelper extends SQLiteOpenHelper {
                 null, null, null, null, SITTER_NAME);
 
         //write contents of Cursor to list
+        int count = 0;
         sitterList = new ArrayList<BrowseSitters.Sitter>();
         while (cursor.moveToNext()) {
+            count++;
             String name = cursor.getString(cursor.getColumnIndex(SITTER_NAME));
             String loc = cursor.getString(cursor.getColumnIndex(LOC));
             String desc = cursor.getString(cursor.getColumnIndex(DESC));
             String lat = cursor.getString(cursor.getColumnIndex(LAT));
             String lon = cursor.getString(cursor.getColumnIndex(LON));
-            sitterList.add(new BrowseSitters().new Sitter(name, loc, desc, lat, lon));
+            sitterList.add(new BrowseSitters.Sitter(name, loc, desc, lat, lon));
         }
+        Log.d("getSitterList()",Integer.toString(count));
         ;
         db.close();
         return sitterList;
@@ -131,10 +134,12 @@ public class SitterSQLHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public ArrayList<BrowseSitters.Service> getSitterServices(BrowseSitters.Sitter sitter){
+    public ArrayList<BrowseSitters.Service> getSitterServices(BrowseSitters.Sitter sitter) {
         SQLiteDatabase db = this.getWritableDatabase();
-        cursor = db.rawQuery("SELECT * FROM " + T_SITTERS + " WHERE " +
-                SITTER_ID + " = " + sitter.getName(),null);
+        String query = "SELECT * FROM " + T_SERVICES + " WHERE " +
+                SITTER_ID + "='" + sitter.getName() + "'";
+        cursor = db.rawQuery(query, null);
+        Log.d("getSitterServices()",query);
 
         //write contents of Cursor to list
         ArrayList<BrowseSitters.Service> sitterServices = new ArrayList<BrowseSitters.Service>();
@@ -142,20 +147,46 @@ public class SitterSQLHelper extends SQLiteOpenHelper {
             String sitterName = cursor.getString(cursor.getColumnIndex(SITTER_ID));
             String service = cursor.getString(cursor.getColumnIndex(SERVICE_NAME));
             int fee = cursor.getInt(cursor.getColumnIndex(SERVICE_FEE));
-            sitterServices.add(new BrowseSitters().new Service(sitterName,service,fee));
+            sitterServices.add(new BrowseSitters.Service(sitterName,service,fee));
         }
         Log.d("JoyPet: ", sitterServices.size() + " Services found for  " + sitter.getName());
         db.close();
         return sitterServices;
     }
 
+    public BrowseSitters.Sitter getSitter (String sitterName){
+        SQLiteDatabase db = this.getWritableDatabase();
+        cursor = db.rawQuery("SELECT * FROM " + T_SITTERS + " WHERE " +
+                SITTER_NAME + " = " + sitterName,null);
+        String name = cursor.getString(cursor.getColumnIndex(SITTER_NAME));
+        String loc = cursor.getString(cursor.getColumnIndex(LOC));
+        String desc = cursor.getString(cursor.getColumnIndex(DESC));
+        String lat = cursor.getString(cursor.getColumnIndex(LAT));
+        String lon = cursor.getString(cursor.getColumnIndex(LON));
+        BrowseSitters.Sitter sitter = new BrowseSitters.Sitter(name,loc,desc,lat,lon);
+        Log.d("JoyPet","Found: " + sitter.toString());
+
+        return sitter;
+
+    }
+
     public ArrayList<BrowseSitters.Sitter> getSittersByService (String selectedService){
         SQLiteDatabase db = this.getWritableDatabase();
-        cursor = db.rawQuery("SELECT " + SITTER_NAME + "," + LOC + "," + DESC + ","+  LAT + "," + LON + "," + SERVICE_FEE +
+        String query = "SELECT " + SITTER_NAME + "," + LOC + "," + DESC + ","+  LAT + "," + LON + "," + SERVICE_FEE +
                 " FROM "+ T_SITTERS +
-                " JOIN " + T_SERVICES + " ON " + T_SITTERS+"."+SITTER_NAME+" = " + T_SERVICES + "."+SITTER_ID +
-                " WHERE " + SERVICE_NAME + " = '" + selectedService + "'" +
-                " GROUP BY " + SITTER_NAME, null);
+                " JOIN " + T_SERVICES + " ON " + T_SITTERS+"."+SITTER_NAME+" = " + T_SERVICES + "."+SITTER_ID;
+        String groupBy = " GROUP BY " + SITTER_NAME;
+
+        // If selected services is "All", don't include a where clause
+        // Otherwise, use the selected service in Where
+
+        if (selectedService.equals("All Services"))
+            query = query + groupBy;
+        else
+            query = query + " WHERE " + SERVICE_NAME + " = '" + selectedService + "'" + groupBy
+                    + " ORDER BY " + SERVICE_FEE ;
+
+        cursor = db.rawQuery(query, null);
 
         ArrayList<BrowseSitters.Sitter> sittersByService = new ArrayList<BrowseSitters.Sitter>();
         while (cursor.moveToNext()) {
@@ -165,8 +196,14 @@ public class SitterSQLHelper extends SQLiteOpenHelper {
             String lat = cursor.getString(cursor.getColumnIndex(LAT));
             String lon = cursor.getString(cursor.getColumnIndex(LON));
             int fee = cursor.getInt(cursor.getColumnIndex(SERVICE_FEE));
-            sittersByService.add(new BrowseSitters().new Sitter(sitterName,loc,desc,lat,lon,fee));
+
+            if(selectedService.equals("All Services"))
+                // Use constructor with no fee if all services are selected
+                sittersByService.add(new BrowseSitters.Sitter(sitterName,loc,desc,lat,lon));
+            else
+                sittersByService.add(new BrowseSitters.Sitter(sitterName,loc,desc,lat,lon,fee));
         }
+
         Log.d("JoyPet: ", sittersByService.size() + " found for  " + selectedService);
         db.close();
         return sittersByService;
@@ -177,26 +214,44 @@ public class SitterSQLHelper extends SQLiteOpenHelper {
     public void addTestData() {
 
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DROP TABLE IF EXISTS sitters");
+        db.execSQL(DROP_SITTERS);
         db.execSQL(CREATE_SITTERS);
-        this.addSitter(new BrowseSitters().new Sitter("Mae", "Waltham","Pawsitively a good time","42.3157","-71.2317"));
-        this.addSitter(new BrowseSitters().new Sitter("Joe", "Waltham","I'll come to you!","42.3465","-71.2456"));
-        this.addSitter(new BrowseSitters().new Sitter("Jimmy", "Waltham","Fenced in backyard","42.3549","-71.2817"));
-        this.addSitter(new BrowseSitters().new Sitter("Tina", "Waltham","Animal Lover!","42.3316","-71.2181"));
-        this.addSitter(new BrowseSitters().new Sitter("Tyler", "Waltham","All pets welcome!","42.3532","-71.2997"));
-        this.addSitter(new BrowseSitters().new Sitter("Gail", "Waltham","Small dogs please!","42.3811","-71.2199"));
+        db.execSQL(DROP_SERVICES);
+        db.execSQL(CREATE_SERVICES);
 
-        this.addService(new BrowseSitters().new Service("Mae","Grooming",20));
-        this.addService(new BrowseSitters().new Service("Mae","Day Care",30));
-        this.addService(new BrowseSitters().new Service("Joe","Pet Sitting",45));
-        this.addService(new BrowseSitters().new Service("Joe","Day Care",50));
-        this.addService(new BrowseSitters().new Service("Tina","Grooming",20));
-        this.addService(new BrowseSitters().new Service("Tina","Day Care",60));
-        this.addService(new BrowseSitters().new Service("Tina","Pet Sitting",35));
-        this.addService(new BrowseSitters().new Service("Tina","Grooming",20));
-        this.addService(new BrowseSitters().new Service("Tyler","Dog Walking",20));
-        this.addService(new BrowseSitters().new Service("Tyler","Pet Sitting",30));
-        this.addService(new BrowseSitters().new Service("Gail","Dog Walking",30));
+        this.addSitter(new BrowseSitters.Sitter("Mae", "Natick","Best pet sitter of all time","42.2775","-71.3468"));
+        this.addSitter(new BrowseSitters.Sitter("Joe", "Waltham","I'll come to you!","42.3465","-71.2456"));
+        this.addSitter(new BrowseSitters.Sitter("Jimmy", "Waltham","Fenced in backyard","42.3549","-71.2817"));
+        this.addSitter(new BrowseSitters.Sitter("Tina", "Waltham","Animal Lover!","42.3316","-71.2181"));
+        this.addSitter(new BrowseSitters.Sitter("Tyler", "Waltham","Ferret enthusiast","42.3532","-71.2997"));
+        this.addSitter(new BrowseSitters.Sitter("Gail", "Waltham","Small dogs only please!","42.3811","-71.2199"));
+        this.addSitter(new BrowseSitters.Sitter("Alice", "Waltham","Dogs only","42.3541","-71.2999"));
+        this.addSitter(new BrowseSitters.Sitter("Stephanie", "Waltham","Crazy cat lady","42.1811","-71.4199"));
+        this.addSitter(new BrowseSitters.Sitter("Monica", "Waltham","Crazy dog lady","42.2811","-71.5199"));
+        this.addSitter(new BrowseSitters.Sitter("Peter", "Waltham","I like turtles","42.2811","-71.5199"));
+
+        this.addService(new BrowseSitters.Service("Mae","Grooming",20));
+        this.addService(new BrowseSitters.Service("Mae","Pet Sitting",35));
+        this.addService(new BrowseSitters.Service("Mae","Dog Walking",20));
+        this.addService(new BrowseSitters.Service("Mae","Day Care",40));
+        this.addService(new BrowseSitters.Service("Mae","Training",30));
+        this.addService(new BrowseSitters.Service("Joe","Pet Sitting",45));
+        this.addService(new BrowseSitters.Service("Joe","Day Care",50));
+        this.addService(new BrowseSitters.Service("Tina","Grooming",20));
+        this.addService(new BrowseSitters.Service("Tina","Day Care",60));
+        this.addService(new BrowseSitters.Service("Tina","Pet Sitting",35));
+        this.addService(new BrowseSitters.Service("Tina","Grooming",20));
+        this.addService(new BrowseSitters.Service("Tyler","Dog Walking",20));
+        this.addService(new BrowseSitters.Service("Tyler","Pet Sitting",20));
+        this.addService(new BrowseSitters.Service("Gail","Dog Walking",15));
+        this.addService(new BrowseSitters.Service("Jimmy","Pet Sitting",30));
+        this.addService(new BrowseSitters.Service("Alice","Day Care",60));
+        this.addService(new BrowseSitters.Service("Alice","Pet Sitting",35));
+        this.addService(new BrowseSitters.Service("Stephanie","Grooming",20));
+        this.addService(new BrowseSitters.Service("Stephanie","Dog Walking",20));
+        this.addService(new BrowseSitters.Service("Monica","Grooming",15));
+        this.addService(new BrowseSitters.Service("Monica","Day Care",14));
+        this.addService(new BrowseSitters.Service("Peter","Training",26));
 
         db.close();
 
