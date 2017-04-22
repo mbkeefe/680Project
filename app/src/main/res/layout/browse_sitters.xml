@@ -1,20 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tabhost" android:layout_width="match_parent"
+
+
+    android:id="@+id/tabhost"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout android:orientation="vertical"
-        android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <TabWidget android:id="@android:id/tabs"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             />
 
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/spinner">
+            android:id="@+id/spinner"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp">
         </Spinner>
 
         <FrameLayout android:id="@android:id/tabcontent"
@@ -22,25 +34,28 @@
 
             <!-- first tab -->
 
-            <LinearLayout android:id="@+id/List"
+            <LinearLayout
+                android:id="@+id/List"
                 android:orientation="vertical" android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <Spinner android:id="@+id/spinner"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent">
-                </Spinner>
+                android:layout_height="match_parent"
+                android:background="#d6ef7a">
 
                 <ListView
                     android:id="@+id/listView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:paddingTop="4dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="4dp"/>
 
             </LinearLayout>
 
             <!-- second tab -->
 
-            <LinearLayout android:id="@+id/Map"
+            <LinearLayout
+                android:id="@+id/Map"
                 android:orientation="vertical" android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
