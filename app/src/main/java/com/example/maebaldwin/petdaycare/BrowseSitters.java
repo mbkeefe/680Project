@@ -1,12 +1,11 @@
-
 //Changed this comment 4/19 6:35PM
 
 
 package com.example.maebaldwin.petdaycare;
 
 import android.content.Intent;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.SQLException;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -14,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -22,6 +20,8 @@ import android.widget.Toast;
 import android.widget.Spinner;
 import android.widget.TextView;
 import java.io.Serializable;
+import android.os.Parcel;
+
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,21 +38,6 @@ import java.util.ArrayList;
 
 /**
  * Created by maebaldwin on 3/7/17.
- */
-
-// Update my comments
-    // New comments to commit 2
-
-
-
-/*
-TODO: Custom adaptor for list view
-TODO: Layout for SitterProfile
-TODO: Book button for Sitter Profile sends SMS/Email
-TODO: Logged in user data
-TODO: Add photo to sitters
-
-
  */
 
 
@@ -72,8 +57,9 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
     private Spinner servicesp;
     private ArrayAdapter<String> spinAdapter;
 
-    private SitterSQLHelper helper;
+    private static SitterSQLHelper helper;
     private SQLiteDatabase db;
+    private ArrayList<Service> sitterServices = new ArrayList<Service>();
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,8 +122,9 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
             Log.d("JoyPet", "Create database failed");
         }
 
-        //possibly create a method for this
+
         helper.addTestData();
+        int t = helper.getSitterList().size();
         for(int i = 0; i <helper.getSitterList().size(); i++){
             sitterAdapter.add(helper.getSitterList().get(i));
         }
@@ -145,11 +132,14 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
 
     }
 
+    // Create Options Menu
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.submenu, menu);
         return true;
     }
 
+
+    // Map zooms in on Waltham area when ready
     public void onMapReady(GoogleMap googleMap){
         map = googleMap;
 
@@ -158,9 +148,10 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(center, zoom));
 
         map.setOnMapLongClickListener(
+
                 new OnMapLongClickListener() {
                     public void onMapLongClick(LatLng point) {
-                        setContentView(R.layout.sitter_profile);
+
                     }
                 }
         );
@@ -168,61 +159,48 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
     }
 
 
-    /*
+    // Listener for ListView
+    // Passes an intent to SitterProfile containing the sitter object that was selected
 
-    // This method is supposed to dynamically hide/show options menuItems
-    // Throwing a null pointer
-
-    public boolean onPrepareOptionsMenu(Menu menu){
-        menu.getItem(R.id.PetProfile).setVisible(false);
-        return true;
-    }
-    */
-
-
-    // When a list item is clicked
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
+
+        Sitter sitter =  sitterAdapter.getItem(position);
+       // sitterServices = helper.getSitterServices(sitter);
+
         Intent intent = new Intent(this, SitterProfile.class);
-        Sitter sitter = sitterAdapter.getItem(position);
-        ArrayList<Service> sitterServices = helper.getSitterServices(sitter);
         Bundle b = new Bundle();
-        b.putSerializable("Sitter", (Serializable) sitter);
-        b.putSerializable("Services",(Serializable) sitterServices);
+        b.putSerializable("sitter",sitter);
         intent.putExtras(b);
+
         startActivity(intent);
-
-
-
     }
 
-    public void onNothingSelected(AdapterView<?> parent) {
+    public void onNothingSelected(AdapterView<?> parent) {}
 
-    }
+
+
 
     // When a service from the spinner is selected, the List view is updated
     // to only display sitters who offer the selected service
+
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+
         mapShowing.setText(spinAdapter.getItem(position));
-        ArrayList<Integer> toRemove = new ArrayList<Integer>();
 
-        // Always reset the list to DB copy when spinner item is clicked
-        sitterAdapter.clear();
-        for (int j = 0; j < helper.getSitterList().size(); j++) {
-            sitterAdapter.add(helper.getSitterList().get(j));
-        }
+        String selection = spinAdapter.getItem(position);
 
-        // If something is selected besides the 'All' option at position 0,
-        if (position > 0) {
-            String selection = spinAdapter.getItem(position);
-            // Find out which Sitters should be removed from the array based on selection
-            filterList(selection);
-        }
+        sitterArray.clear();
+        filterList(selection);
+        sitterAdapter.notifyDataSetChanged();
+
         // Add markers based on filtered List
         addMarkers(sitterArray);
 
     }
 
+
+   // Main Options Menu navigation
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemID = item.getItemId();
 
@@ -253,29 +231,24 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
 
     }
 
-    public void filterList(String selection){
-        ArrayList<Sitter> keepList = new ArrayList<Sitter>();
-        keepList = helper.getSittersByService(selection);
 
-        /*
-        for (int i = 0; i < sitters.size(); i++){
-            String services = sitters.get(i).getSitterServices();
-            // If the selected services if not found within the sitter's service string
-            // remove from sitter list
-            if ((services.indexOf(selection) != -1)){
-                keepList.add(sitters.get(i));
-            }
-        }
-        */
-        sitterArray.clear();
+
+    // Filter list is called when an item in the spinner drop down is selected
+    // It filters the list of service to only sitters who offer the service selected in the spinner
+    public void filterList(String selection){
+        ArrayList<Sitter> keepList;
+        keepList = helper.getSittersByService(selection);
 
         for(int j = 0; j < keepList.size(); j++){
             sitterArray.add(keepList.get(j));
         }
 
-        sitterAdapter.notifyDataSetChanged();
     }
 
+
+
+    // Adds a marker for each sitter in the passed array list
+    // Called after the list of sitters is filtered so map can be updated in concert
     public void addMarkers (ArrayList<Sitter> sitters){
         LatLng coord;
         map.clear();
@@ -293,26 +266,37 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
 
     }
 
-    public class Service{
+
+
+
+    // ----------------- INNER CLASSES --------------------
+
+
+    // The service class describes services offered by sitters. Each service has an associated fee
+    // Services are sitter specific
+
+    public static class Service {
+        private String sitter;
         private String service;
         private int fee;
-        private String sitter;
+
 
         public Service (String sitter, String service, int fee){
             this.sitter = sitter;
             this.service = service;
             this.fee = fee;
-
         }
+
         public String getSitter(){return this.sitter;}
         public String getService(){return this.service;}
         public int getFee(){return this.fee;}
 
-        public String toString(){return this.service + "\t$" + this.fee;}
-    }
 
+}
 
-    public class Sitter {
+    // Sitter Class
+
+    public static class Sitter implements Serializable{
         private String name;
         private String loc;
         private String desc;
@@ -320,6 +304,7 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
         private String lon;
         private int fee;
 
+        public Sitter(){}
 
         public Sitter (String name, String loc, String desc, String lat, String lon){
             this.name = name;
@@ -327,6 +312,7 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
             this.desc = desc;
             this.lat = lat;
             this.lon = lon;
+            this.fee = 0;
         }
 
         public Sitter (String name, String loc, String desc, String lat, String lon, int fee){
@@ -339,6 +325,7 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
         }
 
 
+        // Getters and Setters
         public String getName(){return this.name;}
         public String getLoc(){return this.loc;}
         public String getDesc(){return this.desc;}
@@ -346,12 +333,14 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
         public String getLon(){return this.lon;}
         public int getFee(){return this.fee;}
 
+        public ArrayList<Service> sitterServices (){
+            ArrayList<Service> sitterServices = helper.getSitterServices(this);
+            return sitterServices;
+        }
+
         public String toString(){
             String str;
-            if (this.fee == 0)
                 str = "Name: " + this.name + "\nLocation: " + this.loc + "\n" + this.desc;
-            else
-                str = "Name: " + this.name + "\nLocation: " + this.loc + "\n" + this.desc + "\n$" + this.fee;
                 return str;
 
         }
