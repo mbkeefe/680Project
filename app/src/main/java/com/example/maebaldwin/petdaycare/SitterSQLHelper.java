@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.lang.reflect.Array;
+import java.sql.SQLDataException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -45,6 +46,7 @@ public class SitterSQLHelper extends SQLiteOpenHelper {
     private ContentValues values;
     private ArrayList<BrowseSitters.Sitter> sitterList;
     private Cursor cursor;
+    private String tag = "JoyPet: " + getClass();
 
 
     public SitterSQLHelper(Context context) {
@@ -55,15 +57,15 @@ public class SitterSQLHelper extends SQLiteOpenHelper {
         String sql = CREATE_SITTERS;
         String sql2 = CREATE_SERVICES;
         db.execSQL(sql);
-        Log.d("JoyPet: ", "onCreate: " + sql);
+        Log.d(tag, "onCreate: " + sql);
         db.execSQL(sql2);
-        Log.d("JoyPet: ", "onCreate: " + sql2);
+        Log.d(tag, "onCreate: " + sql2);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion >= newVersion) return;
 
-        Log.d("SQLiteDemo", "onUpgrade: Version = " + newVersion);
+        Log.d(tag, "onUpgrade: Version = " + newVersion);
         db.execSQL(DROP_SITTERS +";" + DROP_SERVICES);
         onCreate(db);
     }
@@ -77,7 +79,7 @@ public class SitterSQLHelper extends SQLiteOpenHelper {
         values.put(LAT, item.getLat());
         values.put(LON, item.getLon());
         db.insert(T_SITTERS, null, values);
-        Log.d("JoyPet", item.getName() + " added");
+        Log.d(tag, item.getName() + " added");
         db.close();
     }
 
@@ -86,14 +88,14 @@ public class SitterSQLHelper extends SQLiteOpenHelper {
         values = new ContentValues();
         values.put(SITTER_NAME, newItem.getName());
         db.update(T_SITTERS, values, SITTER_NAME + "=?", new String[]{item.getName()});
-        Log.d("JoyPet", item.getName() + " updated");
+        Log.d(tag, item.getName() + " updated");
         db.close();
     }
 
     public void updateSitter(BrowseSitters.Sitter item) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(T_SITTERS, SITTER_NAME + "=?", new String[]{item.getName()});
-        Log.d("JoyPet", item.getName() + " deleted");
+        Log.d(tag, item.getName() + " deleted");
         db.close();
     }
 
@@ -116,7 +118,7 @@ public class SitterSQLHelper extends SQLiteOpenHelper {
             String lon = cursor.getString(cursor.getColumnIndex(LON));
             sitterList.add(new BrowseSitters.Sitter(name, loc, desc, lat, lon));
         }
-        Log.d("getSitterList()",Integer.toString(count));
+        Log.d(tag, "Sitters Found: " + Integer.toString(count));
         ;
         db.close();
         return sitterList;
@@ -130,7 +132,7 @@ public class SitterSQLHelper extends SQLiteOpenHelper {
         values.put(SITTER_ID, item.getSitter());
         values.put(SERVICE_FEE, item.getFee());
         db.insert(T_SERVICES, null, values);
-        Log.d("JoyPet: ", item.getService() + " service added for " + item.getSitter());
+        Log.d(tag, item.getService() + " service added for " + item.getSitter());
         db.close();
     }
 
@@ -139,7 +141,6 @@ public class SitterSQLHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + T_SERVICES + " WHERE " +
                 SITTER_ID + "='" + sitter.getName() + "'";
         cursor = db.rawQuery(query, null);
-        Log.d("getSitterServices()",query);
 
         //write contents of Cursor to list
         ArrayList<BrowseSitters.Service> sitterServices = new ArrayList<BrowseSitters.Service>();
@@ -149,12 +150,12 @@ public class SitterSQLHelper extends SQLiteOpenHelper {
             int fee = cursor.getInt(cursor.getColumnIndex(SERVICE_FEE));
             sitterServices.add(new BrowseSitters.Service(sitterName,service,fee));
         }
-        Log.d("JoyPet: ", sitterServices.size() + " Services found for  " + sitter.getName());
+        Log.d(tag, sitterServices.size() + " Services found for  " + sitter.getName());
         db.close();
         return sitterServices;
     }
 
-    public BrowseSitters.Sitter getSitter (String sitterName){
+    public BrowseSitters.Sitter getSitterByName (String sitterName){
         SQLiteDatabase db = this.getWritableDatabase();
         cursor = db.rawQuery("SELECT * FROM " + T_SITTERS + " WHERE " +
                 SITTER_NAME + " = " + sitterName,null);
@@ -164,13 +165,14 @@ public class SitterSQLHelper extends SQLiteOpenHelper {
         String lat = cursor.getString(cursor.getColumnIndex(LAT));
         String lon = cursor.getString(cursor.getColumnIndex(LON));
         BrowseSitters.Sitter sitter = new BrowseSitters.Sitter(name,loc,desc,lat,lon);
-        Log.d("JoyPet","Found: " + sitter.toString());
-
+        Log.d(tag,"Found: " + sitter.toString());
+        db.close();
         return sitter;
 
     }
 
-    public ArrayList<BrowseSitters.Sitter> getSittersByService (String selectedService){
+
+        public ArrayList<BrowseSitters.Sitter> getSittersByService (String selectedService){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT " + SITTER_NAME + "," + LOC + "," + DESC + ","+  LAT + "," + LON + "," + SERVICE_FEE +
                 " FROM "+ T_SITTERS +
@@ -204,7 +206,7 @@ public class SitterSQLHelper extends SQLiteOpenHelper {
                 sittersByService.add(new BrowseSitters.Sitter(sitterName,loc,desc,lat,lon,fee));
         }
 
-        Log.d("JoyPet: ", sittersByService.size() + " found for  " + selectedService);
+        Log.d(tag, sittersByService.size() + " sitters offer " + selectedService + " services");
         db.close();
         return sittersByService;
     }

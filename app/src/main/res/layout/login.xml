@@ -5,30 +5,41 @@
     android:orientation="vertical">
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/logo_green"/>
 
     <EditText
         android:id="@+id/userName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:hint="Username or Email"
+        style="@style/loginEditText"/>
 
     <EditText
         android:id="@+id/password"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword"
+        style="@style/loginEditText"/>
 
     <Button
         android:id="@+id/login"
         android:text="Login"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_login_button"
+        style="@style/loginButton"/>
 
     <Button
         android:id="@+id/createAccount"
         android:text="Create Account"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_login_button"
+        style="@style/loginButton"/>
 
 
 </LinearLayout>

@@ -2,13 +2,13 @@
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="75dp"
+    android:layout_height="62dp"
     android:layout_gravity="center"
+    android:layout_margin="6dp"
+    android:background="@drawable/corners_main"
+    android:fontFamily="casual"
     android:gravity="center"
     android:textAlignment="center"
-    android:layout_margin="6dp"
-    android:typeface="normal"
-    android:fontFamily="casual"
+    android:textColor="@color/DarkGrey"
     android:textSize="20sp"
-    android:background="@drawable/green_corners">
-</TextView>
+    android:typeface="normal"></TextView>
