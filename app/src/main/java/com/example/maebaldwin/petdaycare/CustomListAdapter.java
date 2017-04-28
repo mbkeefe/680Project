@@ -12,8 +12,13 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.view.MenuItem;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import android.widget.TextView;
+
+
+// Custom list adapter is for displaying a custom list in the BrowseSitters activity
 
 public class CustomListAdapter extends BaseAdapter {
 
@@ -66,11 +71,11 @@ public class CustomListAdapter extends BaseAdapter {
 
         holder.sitter.setText(sitters.get(position).getName());
         holder.desc.setText(sitters.get(position).getDesc());
-        if(sitters.get(position).getFee()!=0){
+        if(sitters.get(position).getFee()>0) {
             holder.fee.setTextColor(Color.parseColor("#ff0000"));
-            holder.fee.setText("$" + Integer.toString(sitters.get(position).getFee()));
+            String fee = "$" + Integer.toString(sitters.get(position).getFee());
+            holder.fee.setText(fee);
         }
-
 
         return convertView;
     }

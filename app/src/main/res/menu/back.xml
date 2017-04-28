@@ -4,9 +4,8 @@
     tools:ignore="AppCompatResource"
     >
 
-
-    <item android:id="@+id/logout"
-        android:title="Log Out"
+    <item android:id="@+id/back"
+        android:title="Go Back"
         android:showAsAction="always"/>
 
 </menu>

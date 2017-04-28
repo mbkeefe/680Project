@@ -23,9 +23,10 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".BrowseSitters" />
-        <activity android:name=".PetProfile" />
         <activity android:name=".Services" />
         <activity android:name=".SitterProfile"></activity>
+        <activity android:name=".AccountProfile"></activity>
+        <activity android:name=".CreateUserAccount"></activity>
     </application>
 
 </manifest>

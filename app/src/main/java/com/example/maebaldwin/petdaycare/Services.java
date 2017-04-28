@@ -34,42 +34,10 @@ public class Services extends Activity {
         return true;
     }
 
-    /*
 
-    // This method is supposed to dynamically hide/show options menuItems
-    // Throwing a null pointer
-
-    public boolean onPrepareOptionsMenu(Menu menu){
-        menu.getItem(R.id.PetProfile).setVisible(false);
-        return true;
-    }
-    */
 
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemID = item.getItemId();
-
-        switch (itemID) {
-            case R.id.Home:
-                Intent home = new Intent(this, MainActivity.class);
-                this.startActivity(home);
-                return true;
-
-            case R.id.PetProfile:
-                Intent petProfile = new Intent(this,PetProfile.class);
-                this.startActivity(petProfile);
-                return true;
-
-            case R.id.Reviews:
-                //TODO web service call to Yelp
-                Toast.makeText(getApplicationContext(),"TODO: Yelp Web Service?",Toast.LENGTH_LONG).show();
-
-                return true;
-
-            case R.id.BrowseSitters:
-                Intent browseSitters = new Intent(this,BrowseSitters.class);
-                this.startActivity(browseSitters);
-                return true;
-        }
 
         return false;
 
