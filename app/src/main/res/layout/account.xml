@@ -2,48 +2,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginLeft="10dp">
 
-    <TextView
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/user_pic"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Account Profile"
-        android:textSize="20sp"
-        android:textColor="#A00000"
-        android:textStyle="italic"
-        android:paddingBottom="10dp"/>
+        android:src="@drawable/logo_green"
+        android:layout_gravity="center"/>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="10dp">
+        android:orientation="vertical"
+        android:paddingBottom="10dp"
+        >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:text="User ID"
+            android:text="User Name"
+            android:fontFamily="casual"
+            android:layout_gravity="center"
+            android:textAlignment="center"
             android:paddingRight="10dp"/>
 
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:paddingRight="10dp"
-            android:id="@+id/user_id"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:text="User Name:"
-            android:paddingRight="10dp"/>
-
-        <TextView
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:fontFamily="casual"
+            android:layout_gravity="center"
+            android:textAlignment="center"
             android:id="@+id/user_name"/>
 
     </LinearLayout>
@@ -58,29 +50,36 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:paddingRight="10dp"
-            android:text="Email:" />
+            android:text="Email:"/>
+           // style="@style/updateUserAcct"/>
 
         <EditText
+            android:id="@+id/email"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:inputType="textEmailAddress"
-            android:id="@+id/email"/>
+            android:inputType="textEmailAddress"/>
+    </LinearLayout>
 
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:paddingRight="10dp"
-            android:text="Phone:"/>
+            android:text="Phone:"
+           />/ style="@style/updateUserAcct"
+        />
 
         <EditText
+            android:id="@+id/phone"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:inputType="phone"
-            android:id="@+id/phone"/>
+            android:inputType="phone"/>
 
     </LinearLayout>
 
@@ -94,8 +93,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:paddingRight="10dp"
-            android:text="Hometown:"/>
+            android:text="Location:"
+        />/    style="@style/updateUserAcct"
+        />
 
         <EditText
             android:layout_width="100dp"
@@ -110,6 +110,7 @@
         android:text="Update Profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
+        android:background="@drawable/shape_login_button"
+        style="@style/loginButton" />
 
 </LinearLayout>

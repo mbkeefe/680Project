@@ -107,16 +107,16 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 break;
 
             case "Services":
-                Intent services = new Intent(this,Services.class);
-                this.startActivity(services);
+                Toast.makeText(getApplicationContext(),"Coming soon!",Toast.LENGTH_SHORT).show();
                 break;
 
             case "My Reviews":
-                //TODO web services call to Yelp?
                 Intent reviews = new Intent(this,Reviews.class);
+                Bundle b2 = new Bundle();
+                b2.putSerializable("user",user);
+                reviews.putExtras(b2);
                 this.startActivity(reviews);
 
-                Toast.makeText(getApplicationContext(),"TODO: Yelp Web Service?",Toast.LENGTH_LONG).show();
 
                 break;
 

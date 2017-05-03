@@ -1,5 +1,6 @@
 package com.example.maebaldwin.petdaycare;
 
+import android.app.Activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -14,6 +15,8 @@ import android.os.Bundle;
 import android.location.*;
 import android.util.Log;
 import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -56,7 +59,7 @@ import java.util.List;
 
 
 
-public class Reviews extends AppCompatActivity implements AdapterView.OnItemClickListener, OnInitListener {
+public class Reviews extends Activity implements AdapterView.OnItemClickListener, OnInitListener {
 
     private static final String TAG = "MY APP";
 
@@ -111,10 +114,7 @@ public class Reviews extends AppCompatActivity implements AdapterView.OnItemClic
     private String appID = "VXbKlaxlRkGI3xE17ZTazQ";
     private String appSecret = "M5u9XxVAF7scq0Z0qaFakWWLxgKKyxtzMzOXCZgFg93f9E5acS5d5w4jNI3FMN0p";
     private String appToken = "HGBkYBy7Q60Vt8Fr_69BU6CCNjcMrkTyzdGPsoKxINMww8QvP8t7-DR6Og3X5ipjdy3iwlBH9RD2AXzVsq2jNP5I1qdIZcCf1QbY75FFJSsw0_C_4Nnj-NjH59__WHYx";
-
-
-
-
+    private Account myAccount; //logged in user
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,10 +151,16 @@ public class Reviews extends AppCompatActivity implements AdapterView.OnItemClic
         listview = (ListView) findViewById(R.id.resultsList);
         listview.setOnItemClickListener(this);
 
+
+        //Receive user from previous activity
+        Intent intent = getIntent();
+        Bundle b = intent.getExtras();
+        myAccount = (Account) b.getSerializable("user");
+
         /*bind ArrayAdapter to ArrayList, listYelpResults.  This is where the list of search results
          * will be stored each time a Yelp search is run.  Adapter will be used to write the results
          * to the UI*/
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listYelpResults);
+        adapter = new ArrayAdapter<String>(this, R.layout.reviews_list, listYelpResults);
         listview.setAdapter(adapter);
 
         //setup TabHost
@@ -215,7 +221,27 @@ public class Reviews extends AppCompatActivity implements AdapterView.OnItemClic
 
     }//onCreate
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.back, menu);
+        return true;
+    }
 
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemID = item.getItemId();
+
+        switch (itemID){
+            case R.id.back:
+                Intent back = new Intent(Reviews.this, MainActivity.class);
+                Bundle b1 = new Bundle();
+                b1.putSerializable("user",myAccount);
+                back.putExtras(b1);
+                this.startActivity(back);
+                return true;
+
+        }
+
+        return false;
+    }
 
 
     /*Handler for runYelpSearch background thread message containing an ArrayList of Yelp objects.

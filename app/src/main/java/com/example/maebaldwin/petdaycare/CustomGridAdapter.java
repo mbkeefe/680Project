@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 
 // Custom Grid is for displaying the service name and its amount in different colors
-    // Used in the SitterProfile activity
+// Used in the SitterProfile activity
 
 public class CustomGridAdapter extends BaseAdapter {
     private LayoutInflater inflater;

@@ -8,12 +8,12 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo_green"
         android:label="@string/app_name"
         android:supportsRtl="true">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDAU2ux1_q-08J2PdKvZnhIksFOuRx80ow" />
+            android:value="AIzaSyAgRGA0UTUm41uxV-4Da-5PVPa52uMFuEA" />
 
         <activity android:name=".Login">
             <intent-filter>
@@ -28,8 +28,7 @@
         <activity android:name=".SitterProfile"></activity>
         <activity android:name=".AccountProfile"></activity>
         <activity android:name=".CreateUserAccount"></activity>
-        <activity android:name=".Reviews"
-            android:theme="@style/AppTheme"/>
+        <activity android:name=".Reviews" />
 
     </application>
 

@@ -40,7 +40,8 @@ public class CreateUserAccount extends Activity{
             public void onClick(View v) {
                   String email = enter_email.getText().toString();
 
-                //Make sure email is
+                //Make sure all fields are filled in before adding account
+                //Should add validation for each field
                   if (email.length()>0 && user_name.length()>0 && phone.length()>0
                           && town.length()>0) {
                       account = new Account(
@@ -50,12 +51,17 @@ public class CreateUserAccount extends Activity{
                               town.getText().toString()
                       );
 
+                      //Insert into DB
+                      helper.addAccount(account);
+
                       // Go to Main page
                       Intent intent = new Intent(CreateUserAccount.this, MainActivity.class);
                       Bundle b = new Bundle();
                       b.putSerializable("user",account);
                       intent.putExtras(b);
                       startActivity(intent);
+
+
                   }
 
                   else
