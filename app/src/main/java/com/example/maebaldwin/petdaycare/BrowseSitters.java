@@ -124,7 +124,7 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
         return true;
     }
 
-    // Map zooms in on Waltham area when ready
+    // Map hard coded to zoom in on Waltham area when ready
     public void onMapReady(GoogleMap googleMap){
         map = googleMap;
         LatLng center = new LatLng(42.3498,-71.2251);
@@ -151,6 +151,7 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
         startActivity(intent);
     }
 
+    @Override
     public void onNothingSelected(AdapterView<?> parent) {}
 
 
@@ -242,7 +243,7 @@ public class BrowseSitters extends FragmentActivity implements OnMapReadyCallbac
         public int getFee(){return this.fee;}
 }
 
-    // Sitter Class
+    // Sitter Class - Describes people offering services for pet owners
 
     public static class Sitter implements Serializable{
         private String name;

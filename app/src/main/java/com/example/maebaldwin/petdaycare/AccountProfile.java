@@ -1,8 +1,14 @@
 package com.example.maebaldwin.petdaycare;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -32,10 +38,14 @@ public class AccountProfile extends Activity{
     private TextView text_user_id, text_user_name;
     private EditText edit_email, edit_phone_num, edit_hometown;
     private Button btn_update;
+    private BroadcastReceiver receiver;
+    private IntentFilter filter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.account_profile);
+        setContentView(R.layout.account);
         // get the user_id
 
         Intent intent = getIntent();
@@ -51,9 +61,7 @@ public class AccountProfile extends Activity{
         }
 
         // set the account profile edit text and button
-        text_user_id = (TextView) findViewById(R.id.user_id);
         text_user_name = (TextView) findViewById(R.id.user_name);
-        text_user_id.setText(Integer.toString(myAccount.getId()));
         text_user_name.setText(myAccount.getName());
 
         edit_email = (EditText) findViewById(R.id.email);
@@ -65,8 +73,11 @@ public class AccountProfile extends Activity{
 
         btn_update = (Button) findViewById(R.id.update);
 
+        filter = new IntentFilter("MAIN_ACTION");
+        receiver = new MainReceiver();
+        registerReceiver(receiver, filter);
+
         // update account profile
-        //TODO fix update
         btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,10 +89,26 @@ public class AccountProfile extends Activity{
                 // Save new account information to the existing account, and update the database
                 myAccount = helper.updateAccount(myAccount.getName(), newAccount);
                 Toast.makeText(getApplicationContext(),"Account updated!",Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent("MAIN_ACTION");
+                intent.putExtra("user",myAccount.getName());
+                sendBroadcast(intent);
             }
         });
 
         // go back to main activity
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            unregisterReceiver(receiver);
+        } catch (Exception e) {
+
+            Log.e ("receiver", e.getMessage() );
+        }
+        Log.e ("receiver" , "unregistered" );
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -104,4 +131,43 @@ public class AccountProfile extends Activity{
         if (db != null)
             db.close();
     }
+
+
+    // Broadcast receiver will send a notification to the device
+    // when the update account button is clicked
+
+    public class MainReceiver extends BroadcastReceiver {
+
+        NotificationManager notifyManager;
+        Notification notify;
+
+        public void onReceive(Context localContext, Intent callerIntent){
+
+            // Retrieve info  from broadcasting intent
+
+            String name = callerIntent.getStringExtra("user");
+            // Build notification containing magic number + thread, vibrate phone
+            notifyManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+            Intent notifyIntent = new Intent();
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    AccountProfile.this ,0 ,notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            Notification.Builder notifyBuilder = new Notification.Builder(AccountProfile.this);
+            notifyBuilder
+                    .setContentTitle("JoyPet Notification")
+                    .setContentText(name + "'s Account has been updated")
+                    .setSmallIcon(R.drawable.logo_black)
+                    .setVibrate(new long[]{300})
+                    .setWhen(System.currentTimeMillis())
+            ;
+
+            notify = notifyBuilder.build();
+            notifyManager.notify(0,notify);
+
+            Log.i("Notification", "Sent");
+
+        }
+
+    }
+
 }

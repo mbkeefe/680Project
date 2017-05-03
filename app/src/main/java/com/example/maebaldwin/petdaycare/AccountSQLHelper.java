@@ -138,8 +138,10 @@ public class AccountSQLHelper extends SQLiteOpenHelper{
         this.addAccount(new Account("Joe", "222-222-2222", "joe@gmail.com", "Cambridge"));
         this.addAccount(new Account("Luc", "333-333-3333", "luc@gmail.com", "Waltham"));
         this.addAccount(new Account("Jim", "444-444-4444", "jim@gmail.com", "Belmont"));
+        this.addAccount(new Account("Eugenia", "111-111-1111", "eugenia@gmail.com", "Boston"));
+        this.addAccount(new Account("Doug", "222-222-2222", "doug@gmail.com", "Cambridge"));
+        this.addAccount(new Account("Pengchong", "333-333-3333", "pengchong@gmail.com", "Waltham"));
+        this.addAccount(new Account("Mae", "444-444-4444", "mae@gmail.com", "Belmont"));
     }
-
-
 
 }
