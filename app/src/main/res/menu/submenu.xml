@@ -9,20 +9,12 @@
         android:title="Home"
         android:showAsAction="ifRoom" />
 
-    <item android:id="@+id/Services"
-        android:title="Services"
-        android:showAsAction="never" />
-
-    <item android:id="@+id/PetProfile"
-        android:title="Pet Profile"
+    <item android:id="@+id/MyAccount"
+        android:title="My Account"
         android:showAsAction="never"/>
 
-    <item android:id="@+id/Reviews"
-        android:title="Reviews"
-        android:showAsAction="never"/>
-
-    <item android:id="@+id/BrowseSitters"
-        android:title="Browse Sitters"
+    <item android:id="@+id/Logout"
+        android:title="Log Out"
         android:showAsAction="never"/>
 
 

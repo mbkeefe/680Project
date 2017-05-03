@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:background="@drawable/corners"
     android:paddingLeft="4dp"
@@ -9,27 +9,27 @@
 >
 
     <TableRow
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/sitter"
-            android:textSize="14sp"
+            android:layout_weight="3"
             android:gravity="left"
             android:paddingLeft="6dip"
-            android:layout_weight="3"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/fee"
-            android:textSize="14sp"
+            android:layout_weight="1"
             android:gravity="right"
             android:paddingLeft="6dip"
-            android:layout_weight="1"/>
+            android:paddingRight="10dp"
+            android:textSize="14sp" />
     </TableRow>
 
     <TableRow
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         android:layout_width="match_parent">
 
         <TextView

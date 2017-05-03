@@ -1,6 +1,6 @@
 package com.example.maebaldwin.petdaycare;
 
-
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.content.Intent;
 import android.util.Log;
 import android.database.sqlite.SQLiteDatabase;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,16 +35,13 @@ public class SitterProfile extends FragmentActivity implements OnMapReadyCallbac
     private GridView serviceGrid;
     private BrowseSitters.Sitter sitter;
     private float zoom = 13.1f;
-    private Bundle sitterBundle;
-    private String sitterName;
-    private SQLiteDatabase db;
-    private SitterSQLHelper helper;
     private LatLng loc;
-    private TextView sitterDesc;
     private Button clear;
     private CustomGridAdapter serviceAdapter;
     private ArrayList<BrowseSitters.Service> sitterServices = new ArrayList<BrowseSitters.Service>();
     private ArrayList<BrowseSitters.Service> selected = new ArrayList<BrowseSitters.Service>();
+    private Account user;
+    private String tag = "JoyPet: " + getClass();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,24 +56,30 @@ public class SitterProfile extends FragmentActivity implements OnMapReadyCallbac
         contact.setText("Contact");
         selectedSrvs = (TextView) findViewById(R.id.SelectedSrv);
         serviceGrid = (GridView) findViewById(R.id.ServiceGrid);
-
+        Typeface custTypeFace = Typeface.createFromAsset(getAssets(),
+                "eurof55.ttf");
+        selectedSrvs.setTypeface(custTypeFace);
+        contact.setTypeface(custTypeFace);
+        sitterInfo.setTypeface(custTypeFace);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.SitterMapFrag);
         mapFragment.getMapAsync(this);
 
-
         // Retrieve the sitter that was passed by BrowseSitters Activity
-        Intent sitterIntent = getIntent();
-        Bundle b = sitterIntent.getExtras();
+        Intent intent = getIntent();
+        Bundle b = intent.getExtras();
+
+        // get sitter from bundle
         sitter = new BrowseSitters.Sitter();
         sitter = (BrowseSitters.Sitter) b.getSerializable("sitter");
+        // Retrieve logged in user, just so it can be passed back to BrowseSitters
+        user = (Account)b.getSerializable("user");
 
+        sitterInfo.setText(sitter.toString());
         // Retrieves list of services for that sitter
         sitterServices = sitter.sitterServices();
 
-
-        sitterInfo.setText(sitter.toString());
 
         // Use custom adapter for grid view for displaying services
         serviceAdapter = new CustomGridAdapter(this,sitterServices);
@@ -86,7 +88,6 @@ public class SitterProfile extends FragmentActivity implements OnMapReadyCallbac
 
         // Clear button removes any services that have been selected
         // Button is invisible after clearing selections
-
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,7 +96,6 @@ public class SitterProfile extends FragmentActivity implements OnMapReadyCallbac
                 clear.setVisibility(View.INVISIBLE);
             }
         });
-
 
         // Sends an email to the sitter with the selected services in the subject line
         contact.setOnClickListener(new View.OnClickListener() {
@@ -109,11 +109,12 @@ public class SitterProfile extends FragmentActivity implements OnMapReadyCallbac
                     startActivity(email);
                 }
 
+                Log.i(tag,user.getName() + " contacting " + sitter.getName() + " about " + selectedSrvs.getText().toString());
+
             }
         });
 
     }
-
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.back, menu);
         return true;
@@ -126,6 +127,9 @@ public class SitterProfile extends FragmentActivity implements OnMapReadyCallbac
 
     public boolean onOptionsItemSelected(MenuItem item) {
             Intent back = new Intent(this, BrowseSitters.class);
+            Bundle b = new Bundle();
+            b.putSerializable("user",user);
+            back.putExtras(b);
             this.startActivity(back);
             return true;
     }
@@ -154,24 +158,24 @@ public class SitterProfile extends FragmentActivity implements OnMapReadyCallbac
         boolean found = false;
         BrowseSitters.Service service = serviceAdapter.getItem(position);
 
-
-        // Show clear button if something has been selected
+        // Display clear button if a service has already been selected
         if (selected.size()==0) {
             selected.add(service);
             clear.setVisibility(View.VISIBLE);
         }
 
+        // If services have already been selected, check to make sure the new one is not already on the list
         else {
+
             for (int i = 0; i < selected.size() && !found; i++) {
-                if ((service.getService().equals(selected.get(i).getService()))) {
+                if ((service.getService().equals(selected.get(i).getService())))
                     found = true;
-                }
             }
             if (!found) {
                 selected.add(service);
              }
 
-         }
+        }
 
          // Display which services have been selected by the user
          selectedSrvs.setText("");
@@ -182,9 +186,5 @@ public class SitterProfile extends FragmentActivity implements OnMapReadyCallbac
              else
                  selectedSrvs.append(", " + selected.get(j).getService());
          }
-
-
     }
-
-
 }

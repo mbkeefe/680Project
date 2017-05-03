@@ -9,9 +9,4 @@
         android:title="Log Out"
         android:showAsAction="always"/>
 
-    <item android:id="@+id/myAccount"
-        android:title="My Account"
-        android:showAsAction="always" />
-
-
 </menu>

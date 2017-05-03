@@ -5,28 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@color/Peach"
     tools:context="com.example.maebaldwin.petdaycare.MainActivity">
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="J o y P e t"
         android:layout_alignParentTop="true"
         android:fontFamily="casual"
-        android:textSize="30sp"
-
-        android:textColor="#000000"
-        android:textStyle="normal|bold"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:textColor="@color/white"
+        android:textSize="20sp"
         android:typeface="monospace" />
 
     <ImageView
-        android:id="@+id/catdog"
+        android:id="@+id/slide"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/title"/>
+        android:layout_height="280dp"
+        android:layout_below="@+id/title"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"/>
 
         <GridView
         android:id="@+id/grid"
@@ -35,7 +38,7 @@
         android:numColumns="auto_fit"
         android:gravity="center"
         android:layout_gravity="center"
-        android:layout_below="@+id/catdog"
+        android:layout_below="@+id/slide"
         android:verticalSpacing="10dip"
         android:horizontalSpacing="10dip"
         android:layout_marginLeft="10dip"

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/selected" android:oneshot="false">
+
+    <item android:drawable="@drawable/dog_sitting" android:duration="3000" />
+    <item android:drawable="@drawable/girl_travelling_with_luggage" android:duration="3000" />
+    <item android:drawable="@drawable/girl_lying_on_inflatable_mattress" android:duration="3000" />
+    <item android:drawable="@drawable/dog_happy" android:duration="3000" />
+    <item android:drawable="@drawable/dog_hugging" android:duration="3000" />
+    <item android:drawable="@drawable/dog_playing_skateboard" android:duration="3000" />
+    <item android:drawable="@drawable/dog_sleeping" android:duration="3000" />
+    <item android:drawable="@drawable/dog_with_friend" android:duration="3000" />
+</animation-list>

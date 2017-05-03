@@ -2,6 +2,7 @@ package com.example.maebaldwin.petdaycare;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
@@ -10,23 +11,39 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ArrayAdapter;
-import android.app.ActionBar.LayoutParams;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.graphics.drawable.AnimationDrawable;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
 
-    private final String[] menu = {"View Sitters","Pet Profile","Services","My Reviews"};
+    private final String[] menu = {"View Sitters","My Account","Services","My Reviews"};
     private ImageView catdog;
+    private TextView welcome;
+    private Account user;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ImageView img = (ImageView) findViewById(R.id.slide);
+        img.setBackgroundResource(R.drawable.slid_by_slid);
 
-        catdog = (ImageView) findViewById(R.id.catdog);
-        catdog.setImageResource(R.drawable.catdog);
+        AnimationRoutine1 task1 = new AnimationRoutine1();
+        AnimationRoutine2 task2 = new AnimationRoutine2();
+
+        Timer t = new Timer();
+        t.schedule(task1, 4000);
+        Timer t2 = new Timer();
+        t2.schedule(task2, 1000);
+        welcome = (TextView)findViewById(R.id.title);
+
 
         GridView grid = (GridView) findViewById(R.id.grid);
         grid.setOnItemClickListener(this);
@@ -37,6 +54,16 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 menu);
 
         grid.setAdapter(adapter);
+
+
+        // Get user
+
+        Intent intent = getIntent();
+        Bundle b = intent.getExtras();
+        user = (Account) b.getSerializable("user");
+
+        welcome.setText("Welcome, " + user.getName() + "!");
+
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -53,9 +80,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 this.startActivity(logout);
                 return true;
 
-            case R.id.myAccount:
-                //// TODO: 3/6/17
-                return true;
         }
 
         return false;
@@ -67,12 +91,19 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         switch(selected){
             case "View Sitters":
                 Intent browseSitters = new Intent(this,BrowseSitters.class);
-                this.startActivity(browseSitters);
+                Bundle b = new Bundle();
+                b.putSerializable("user",user);
+                browseSitters.putExtras(b);
+                startActivity(browseSitters);
                 break;
 
-            case "Pet Profile":
-                Intent petProfile = new Intent(this,PetProfile.class);
-                this.startActivity(petProfile);
+            case "My Account":
+                Intent accountProfile = new Intent(this,AccountProfile.class);
+                Bundle b1 = new Bundle();
+                b1.putSerializable("user",user);
+                accountProfile.putExtras(b1);
+                startActivity(accountProfile);
+
                 break;
 
             case "Services":
@@ -93,5 +124,26 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
 
     }
+
+    class AnimationRoutine1 extends TimerTask {
+
+        @Override
+        public void run() {
+            ImageView img = (ImageView) findViewById(R.id.slide);
+            AnimationDrawable frameAnimation = (AnimationDrawable) img.getBackground();
+            frameAnimation.start();
+        }
+    }
+
+    class AnimationRoutine2 extends TimerTask {
+
+        @Override
+        public void run() {
+            ImageView img = (ImageView) findViewById(R.id.slide);
+            AnimationDrawable frameAnimation = (AnimationDrawable) img.getBackground();
+            frameAnimation.stop();
+        }
+    }
+
 
 }
