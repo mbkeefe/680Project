@@ -3,6 +3,7 @@
     package="com.example.maebaldwin.petdaycare">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -27,6 +28,9 @@
         <activity android:name=".SitterProfile"></activity>
         <activity android:name=".AccountProfile"></activity>
         <activity android:name=".CreateUserAccount"></activity>
+        <activity android:name=".Reviews"
+            android:theme="@style/AppTheme"/>
+
     </application>
 
 </manifest>

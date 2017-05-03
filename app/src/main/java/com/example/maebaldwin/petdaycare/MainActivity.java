@@ -113,6 +113,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             case "My Reviews":
                 //TODO web services call to Yelp?
+                Intent reviews = new Intent(this,Reviews.class);
+                this.startActivity(reviews);
 
                 Toast.makeText(getApplicationContext(),"TODO: Yelp Web Service?",Toast.LENGTH_LONG).show();
 
